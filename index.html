@@ -3,113 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>میرا پروڈکٹ کیٹلاگ</title>
+    <title>پروڈکٹ کیٹلاگ - سب فولڈرز کے ساتھ</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 20px;
-            direction: rtl; /* اردو کے لیے رائٹ ٹو لیفٹ */
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-        }
+        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; direction: rtl; }
+        h1 { text-align: center; color: #333; }
         #product-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            padding: 20px;
         }
         .product-card {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             text-align: center;
-            transition: transform 0.3s;
         }
-        .product-card:hover {
-            transform: translateY(-5px);
-        }
-        .product-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-        .product-card p {
-            padding: 15px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #444;
-            margin: 0;
-            word-break: break-all;
-        }
-        .loading {
-            text-align: center;
-            font-size: 20px;
-            color: #666;
-        }
+        .product-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; }
+        .product-card p { margin-top: 10px; font-weight: bold; font-size: 14px; color: #555; }
+        .folder-name { grid-column: 1 / -1; background: #333; color: white; padding: 10px; border-radius: 5px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <h1>تمام پروڈکٹس</h1>
-    
-    <div id="product-container" class="loading">تصویریں لوڈ ہو رہی ہیں، براہ کرم انتظار کریں...</div>
+    <h1>میرے تمام پروڈکٹس</h1>
+    <div id="product-container">لوڈنگ جاری ہے...</div>
 
     <script>
-        // آپ کی گٹ ہب کی معلومات
-        const username = "ulutfyad48-debug"; 
-        const repo = "12"; 
-        const folder = "1122"; 
+        const username = "ulutfyad48-debug";
+        const repo = "12";
+        const mainFolder = "1122";
 
-        // GitHub API کا یو آر ایل
-        const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${folder}`;
+        async function fetchContent(path) {
+            const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+            const response = await fetch(url);
+            return await response.json();
+        }
 
-        async function loadImages() {
+        async function loadAllProducts(path) {
             const container = document.getElementById('product-container');
-            
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) throw new Error("فائلیں نہیں مل سکیں");
-                
-                const files = await response.json();
-                container.innerHTML = ""; // لوڈنگ والا میسج ختم کرنے کے لیے
-                container.classList.remove('loading');
+            if(path === mainFolder) container.innerHTML = ""; // پہلی بار صاف کریں
 
-                files.forEach(file => {
-                    // صرف تصویریں دکھانے کے لیے چیک (jpg, png, webp وغیرہ)
-                    if (file.name.match(/\.(jpg|jpeg|png|gif|webp|bmp)$/i)) {
+            try {
+                const items = await fetchContent(path);
+
+                for (let item of items) {
+                    if (item.type === "dir") {
+                        // اگر یہ ایک فولڈر ہے، تو اس کے اندر کی چیزیں ڈھونڈو
+                        const folderTitle = document.createElement('div');
+                        folderTitle.className = 'folder-name';
+                        folderTitle.innerText = `فولڈر: ${item.name}`;
+                        container.appendChild(folderTitle);
+                        
+                        await loadAllProducts(item.path); // ریکرسو کال (فولڈر کے اندر جانا)
+                    } 
+                    else if (item.type === "file" && item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        // اگر یہ تصویر ہے، تو کارڈ بناؤ
                         const card = document.createElement('div');
                         card.className = 'product-card';
-                        
-                        // تصویر کا نام (بغیر ایکسٹینشن کے دکھانے کے لیے)
-                        const displayName = file.name.split('.').slice(0, -1).join('.');
+                        const displayName = item.name.split('.').slice(0, -1).join('.');
 
                         card.innerHTML = `
-                            <img src="${file.download_url}" alt="${file.name}">
+                            <img src="${item.download_url}" alt="${item.name}">
                             <p>${displayName}</p>
                         `;
                         container.appendChild(card);
                     }
-                });
-
-                if (container.innerHTML === "") {
-                    container.innerHTML = "<p>فولڈر میں کوئی تصویر نہیں ملی۔</p>";
                 }
-
             } catch (error) {
                 console.error("Error:", error);
-                container.innerHTML = "<p>کوڈ میں کوئی مسئلہ ہے یا فولڈر کا نام غلط ہے۔</p>";
             }
         }
 
-        // فنکشن چلائیں
-        loadImages();
+        loadAllProducts(mainFolder);
     </script>
 </body>
 </html>
