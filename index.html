@@ -5,23 +5,270 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پروڈکٹ کیٹلاگ - سب فولڈرز کے ساتھ</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f4; padding: 20px; direction: rtl; }
-        h1 { text-align: center; color: #333; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f0f2f5;
+            padding: 16px;
+            direction: rtl;
+        }
+
+        h1 {
+            text-align: center;
+            color: #1a1a2e;
+            font-size: 22px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
         #product-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
         }
+
         .product-card {
             background: white;
-            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.14);
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 170px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.22s;
+        }
+
+        .img-wrapper:hover img {
+            transform: scale(1.04);
+        }
+
+        .zoom-hint {
+            position: absolute;
+            bottom: 6px;
+            left: 6px;
+            background: rgba(0,0,0,0.55);
+            color: #fff;
+            font-size: 11px;
+            padding: 3px 7px;
+            border-radius: 20px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .img-wrapper:hover .zoom-hint {
+            opacity: 1;
+        }
+
+        .product-name {
+            padding: 8px 10px 4px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        /* --- Action Buttons --- */
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            padding: 8px 8px 10px;
+        }
+
+        .btn {
+            border: none;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 8px 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: background 0.15s, transform 0.1s, opacity 0.15s;
+            min-height: 38px;
+            touch-action: manipulation;
+            letter-spacing: 0.01em;
+        }
+
+        .btn:active { transform: scale(0.96); opacity: 0.85; }
+
+        .btn-copy-link {
+            background: #4361ee;
+            color: #fff;
+            grid-column: span 2;
+        }
+        .btn-copy-link:hover { background: #3451d1; }
+
+        .btn-open {
+            background: #f0f4ff;
+            color: #4361ee;
+            border: 1.5px solid #c5d0f8;
+        }
+        .btn-open:hover { background: #dce4ff; }
+
+        .btn-copy-html {
+            background: #fff4e6;
+            color: #e07b00;
+            border: 1.5px solid #ffd8a0;
+        }
+        .btn-copy-html:hover { background: #ffe8c0; }
+
+        .btn-copy-md {
+            background: #f0fdf4;
+            color: #1a8e4a;
+            border: 1.5px solid #a3e6bc;
+        }
+        .btn-copy-md:hover { background: #d2f5e2; }
+
+        /* --- Folder Title --- */
+        .folder-name {
+            grid-column: 1 / -1;
+            background: #1a1a2e;
+            color: #e0e0e0;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* --- Toast Notification --- */
+        #toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(30px);
+            background: #1a1a2e;
+            color: #fff;
+            padding: 11px 24px;
+            border-radius: 28px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s, transform 0.25s;
+            z-index: 9999;
+            white-space: nowrap;
+            max-width: 90vw;
             text-align: center;
         }
-        .product-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 5px; }
-        .product-card p { margin-top: 10px; font-weight: bold; font-size: 14px; color: #555; }
-        .folder-name { grid-column: 1 / -1; background: #333; color: white; padding: 10px; border-radius: 5px; margin-top: 20px; }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* --- Lightbox / Modal --- */
+        #lightbox {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        #lightbox.open { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        #lightbox-img {
+            max-width: 100%;
+            max-height: 65vh;
+            border-radius: 10px;
+            object-fit: contain;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+        }
+
+        #lightbox-name {
+            color: #ddd;
+            font-size: 14px;
+            margin-top: 12px;
+            text-align: center;
+            max-width: 90vw;
+            word-break: break-word;
+        }
+
+        #lightbox-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lb-btn {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 44px;
+            touch-action: manipulation;
+            transition: opacity 0.15s, transform 0.1s;
+        }
+
+        .lb-btn:active { transform: scale(0.95); opacity: 0.8; }
+
+        .lb-btn-copy { background: #4361ee; color: #fff; }
+        .lb-btn-copy:hover { background: #3451d1; }
+
+        .lb-btn-download { background: #1a8e4a; color: #fff; }
+        .lb-btn-download:hover { background: #157a3e; }
+
+        .lb-btn-close {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            border: 1.5px solid rgba(255,255,255,0.25);
+        }
+        .lb-btn-close:hover { background: rgba(255,255,255,0.2); }
+
+        /* --- SVG Icons --- */
+        .icon { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
+
+        @media (max-width: 400px) {
+            #product-container { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+        }
     </style>
 </head>
 <body>
@@ -29,11 +276,144 @@
     <h1>میرے تمام پروڈکٹس</h1>
     <div id="product-container">لوڈنگ جاری ہے...</div>
 
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" role="dialog" aria-modal="true">
+        <img id="lightbox-img" src="" alt="">
+        <div id="lightbox-name"></div>
+        <div id="lightbox-actions">
+            <button class="lb-btn lb-btn-copy" onclick="lbCopyLink()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+                لنک کاپی کریں
+            </button>
+            <button class="lb-btn lb-btn-download" onclick="lbDownload()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                ڈاؤنلوڈ
+            </button>
+            <button class="lb-btn lb-btn-close" onclick="closeLightbox()">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                بند کریں
+            </button>
+        </div>
+    </div>
+
     <script>
         const username = "ulutfyad48-debug";
         const repo = "12";
         const mainFolder = "1122";
 
+        // ========== TOAST ==========
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+        }
+
+        // ========== CLIPBOARD HELPER ==========
+        async function copyText(text, successMsg) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showToast(successMsg || '✅ کاپی ہو گیا!');
+            } catch {
+                // fallback
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(successMsg || '✅ کاپی ہو گیا!');
+            }
+        }
+
+        // ========== LIGHTBOX ==========
+        let currentImgUrl = '';
+        let currentImgName = '';
+
+        function openLightbox(url, name) {
+            currentImgUrl = url;
+            currentImgName = name;
+            document.getElementById('lightbox-img').src = url;
+            document.getElementById('lightbox-img').alt = name;
+            document.getElementById('lightbox-name').textContent = name;
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function lbCopyLink() {
+            copyText(currentImgUrl, '✅ تصویر کا لنک کاپی ہو گیا!');
+        }
+
+        function lbDownload() {
+            const a = document.createElement('a');
+            a.href = currentImgUrl;
+            a.download = currentImgName || 'image';
+            a.target = '_blank';
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // Close lightbox on backdrop click
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) closeLightbox();
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // ========== CARD BUILDER ==========
+        function createCard(item) {
+            const url = item.download_url;
+            const displayName = item.name.split('.').slice(0, -1).join('.');
+
+            const card = document.createElement('div');
+            card.className = 'product-card';
+
+            card.innerHTML = `
+                <div class="img-wrapper" onclick="openLightbox('${url.replace(/'/g,"\\'")}', '${displayName.replace(/'/g,"\\'")}')">
+                    <img src="${url}" alt="${item.name}" loading="lazy">
+                    <span class="zoom-hint">🔍 بڑا دیکھیں</span>
+                </div>
+                <div class="product-name">${displayName}</div>
+                <div class="card-actions">
+                    <button class="btn btn-copy-link" onclick="copyText('${url.replace(/'/g,"\\'")}', '✅ تصویر کا لنک کاپی ہو گیا!')">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+                        لنک کاپی کریں
+                    </button>
+                    <button class="btn btn-open" onclick="window.open('${url.replace(/'/g,"\\'")}','_blank')">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                        کھولیں
+                    </button>
+                    <button class="btn btn-copy-html" onclick="copyText('<img src=\\'${url.replace(/'/g,"\\'")}\\'>','✅ HTML ٹیگ کاپی ہو گیا!')">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+                        HTML کاپی
+                    </button>
+                    <button class="btn btn-copy-md" onclick="copyText('${url.replace(/'/g,"\\'")}','✅ Markdown لنک کاپی ہو گیا!')">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM11 7h2v2h2v2h-2v2h-2v-2H9V9h2V7z"/></svg>
+                        MD لنک
+                    </button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        // ========== GITHUB API ==========
         async function fetchContent(path) {
             const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
             const response = await fetch(url);
@@ -42,36 +422,31 @@
 
         async function loadAllProducts(path) {
             const container = document.getElementById('product-container');
-            if(path === mainFolder) container.innerHTML = ""; // پہلی بار صاف کریں
+            if (path === mainFolder) container.innerHTML = "";
 
             try {
                 const items = await fetchContent(path);
 
                 for (let item of items) {
                     if (item.type === "dir") {
-                        // اگر یہ ایک فولڈر ہے، تو اس کے اندر کی چیزیں ڈھونڈو
                         const folderTitle = document.createElement('div');
                         folderTitle.className = 'folder-name';
-                        folderTitle.innerText = `فولڈر: ${item.name}`;
-                        container.appendChild(folderTitle);
-                        
-                        await loadAllProducts(item.path); // ریکرسو کال (فولڈر کے اندر جانا)
-                    } 
-                    else if (item.type === "file" && item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-                        // اگر یہ تصویر ہے، تو کارڈ بناؤ
-                        const card = document.createElement('div');
-                        card.className = 'product-card';
-                        const displayName = item.name.split('.').slice(0, -1).join('.');
-
-                        card.innerHTML = `
-                            <img src="${item.download_url}" alt="${item.name}">
-                            <p>${displayName}</p>
+                        folderTitle.innerHTML = `
+                            <svg style="width:16px;height:16px;fill:#aaa;flex-shrink:0" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+                            فولڈر: ${item.name}
                         `;
-                        container.appendChild(card);
+                        container.appendChild(folderTitle);
+                        await loadAllProducts(item.path);
+                    } else if (item.type === "file" && item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        container.appendChild(createCard(item));
                     }
                 }
             } catch (error) {
                 console.error("Error:", error);
+                const errDiv = document.createElement('div');
+                errDiv.style.cssText = 'grid-column:1/-1;color:red;text-align:center;padding:20px';
+                errDiv.textContent = 'لوڈ کرنے میں خرابی آئی۔';
+                container.appendChild(errDiv);
             }
         }
 
