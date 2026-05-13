@@ -527,6 +527,27 @@
             if (e.target === this) closeLightbox();
         });
 
+        // ========== MOBILE-FRIENDLY DOWNLOAD ==========
+        async function mobileDownload(url, name) {
+            showToast('⏳ ڈاؤنلوڈ شروع ہو رہا ہے...');
+            try {
+                const resp = await fetch(url);
+                const blob = await resp.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = name || 'video';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 8000);
+                showToast('✅ ڈاؤنلوڈ مکمل!');
+            } catch {
+                window.open(url, '_blank', 'noopener');
+                showToast('✅ نئے ٹیب میں کھلا — وہاں سے سیو کریں');
+            }
+        }
+
         // ========== VIDEO MODAL ==========
         let currentVideoUrl = '';
         let currentVideoName = '';
@@ -534,13 +555,9 @@
         function openVideoModal(url, name) {
             currentVideoUrl = url;
             currentVideoName = name;
-            const vid = document.getElementById('modal-video');
-            vid.src = url;
-            vid.load();
-            document.getElementById('video-modal-name').textContent = name;
-            document.getElementById('video-modal').classList.add('open');
-            document.body.style.overflow = 'hidden';
-            vid.play().catch(() => {});
+
+            // GitHub raw URLs: open directly in browser tab — fast, no buffering wait
+            window.open(url, '_blank', 'noopener');
         }
 
         function closeVideoModal() {
@@ -553,12 +570,26 @@
 
         function vmCopyLink() { copyText(currentVideoUrl, '✅ ویڈیو کا لنک کاپی ہو گیا!'); }
 
-        function vmDownload() {
-            const a = document.createElement('a');
-            a.href = currentVideoUrl;
-            a.download = currentVideoName || 'video';
-            a.target = '_blank'; a.rel = 'noopener';
-            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        // Mobile-friendly download: fetch blob then save
+        async function vmDownload() {
+            showToast('⏳ ڈاؤنلوڈ شروع ہو رہا ہے...');
+            try {
+                const resp = await fetch(currentVideoUrl);
+                const blob = await resp.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = currentVideoName || 'video';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+                showToast('✅ ڈاؤنلوڈ مکمل!');
+            } catch {
+                // Fallback: open in new tab
+                window.open(currentVideoUrl, '_blank', 'noopener');
+                showToast('✅ نئے ٹیب میں کھلا — وہاں سے سیو کریں');
+            }
         }
 
         document.getElementById('video-modal').addEventListener('click', function(e) {
@@ -633,17 +664,17 @@
                 </div>
                 <div class="product-name">${displayName}</div>
                 <div class="card-actions">
-                    <button class="btn btn-play-video" onclick="openVideoModal('${safeUrl}', '${safeName}')">
+                    <button class="btn btn-play-video" onclick="window.open('${safeUrl}','_blank','noopener')" style="grid-column:span 2">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                         ویڈیو چلائیں
                     </button>
-                    <button class="btn btn-open" onclick="window.open('${safeUrl}','_blank')">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
-                        کھولیں
-                    </button>
-                    <button class="btn btn-copy-link" onclick="copyText('${safeUrl}', '✅ ویڈیو کا لنک کاپی ہو گیا!')" style="grid-column:span 2">
+                    <button class="btn btn-copy-link" onclick="copyText('${safeUrl}', '✅ ویڈیو کا لنک کاپی ہو گیا!')">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
-                        لنک کاپی کریں
+                        لنک کاپی
+                    </button>
+                    <button class="btn btn-copy-md" onclick="mobileDownload('${safeUrl}','${safeName}')">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        ڈاؤنلوڈ
                     </button>
                 </div>
             `;
