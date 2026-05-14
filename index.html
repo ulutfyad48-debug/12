@@ -2,8 +2,8 @@
 <html lang="ur">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>پروڈکٹ کیٹلاگ - سب فولڈرز کے ساتھ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>پروڈکٹ کیٹلاگ - جدید ترین سب سے اوپر</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -107,7 +107,6 @@
             transform: scale(1.02);
         }
 
-        /* Play button overlay */
         .play-overlay {
             position: absolute;
             inset: 0;
@@ -143,10 +142,9 @@
             width: 20px;
             height: 20px;
             fill: #1a1a2e;
-            margin-right: -3px; /* optical center */
+            margin-right: -3px;
         }
 
-        /* Video badge */
         .video-badge {
             position: absolute;
             top: 8px;
@@ -157,11 +155,9 @@
             font-weight: 700;
             padding: 3px 8px;
             border-radius: 20px;
-            letter-spacing: 0.05em;
             box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
-        /* Duration badge */
         .duration-badge {
             position: absolute;
             bottom: 8px;
@@ -175,7 +171,6 @@
             display: none;
         }
 
-        /* ===== PRODUCT NAME ===== */
         .product-name {
             padding: 8px 10px 4px;
             font-size: 13px;
@@ -185,7 +180,6 @@
             word-break: break-word;
         }
 
-        /* ===== ACTION BUTTONS ===== */
         .card-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -204,7 +198,7 @@
             align-items: center;
             justify-content: center;
             gap: 4px;
-            transition: background 0.15s, transform 0.1s, opacity 0.15s;
+            transition: background 0.15s, transform 0.1s;
             min-height: 38px;
             touch-action: manipulation;
             letter-spacing: 0.01em;
@@ -240,7 +234,6 @@
         }
         .btn-copy-md:hover { background: #d2f5e2; }
 
-        /* Video specific button */
         .btn-play-video {
             background: linear-gradient(135deg, #e63946, #c1121f);
             color: #fff;
@@ -248,7 +241,6 @@
         }
         .btn-play-video:hover { background: linear-gradient(135deg, #c1121f, #a00c17); }
 
-        /* ===== FOLDER TITLE ===== */
         .folder-name {
             grid-column: 1 / -1;
             background: #1a1a2e;
@@ -263,7 +255,6 @@
             gap: 8px;
         }
 
-        /* ===== TOAST ===== */
         #toast {
             position: fixed;
             bottom: 32px;
@@ -290,7 +281,6 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ===== IMAGE LIGHTBOX ===== */
         #lightbox {
             display: none;
             position: fixed;
@@ -345,25 +335,14 @@
             gap: 6px;
             min-height: 44px;
             touch-action: manipulation;
-            transition: opacity 0.15s, transform 0.1s;
         }
 
         .lb-btn:active { transform: scale(0.95); opacity: 0.8; }
-
         .lb-btn-copy { background: #4361ee; color: #fff; }
-        .lb-btn-copy:hover { background: #3451d1; }
-
         .lb-btn-download { background: #1a8e4a; color: #fff; }
-        .lb-btn-download:hover { background: #157a3e; }
-
-        .lb-btn-close {
-            background: rgba(255,255,255,0.12);
-            color: #fff;
-            border: 1.5px solid rgba(255,255,255,0.25);
-        }
+        .lb-btn-close { background: rgba(255,255,255,0.12); color: #fff; border: 1.5px solid rgba(255,255,255,0.25); }
         .lb-btn-close:hover { background: rgba(255,255,255,0.2); }
 
-        /* ===== VIDEO MODAL ===== */
         #video-modal {
             display: none;
             position: fixed;
@@ -376,37 +355,14 @@
             padding: 16px;
             animation: fadeIn 0.2s ease;
         }
-
         #video-modal.open { display: flex; }
-
         #modal-video {
             max-width: 100%;
             max-height: 70vh;
             width: 100%;
             border-radius: 12px;
-            box-shadow: 0 8px 40px rgba(0,0,0,0.6);
             background: #000;
-            outline: none;
         }
-
-        #video-modal-name {
-            color: #ccc;
-            font-size: 14px;
-            margin-top: 12px;
-            text-align: center;
-            max-width: 90vw;
-            word-break: break-word;
-        }
-
-        #video-modal-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 14px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        /* ===== SVG ICONS ===== */
         .icon { width: 15px; height: 15px; fill: currentColor; flex-shrink: 0; }
 
         @media (max-width: 400px) {
@@ -415,50 +371,29 @@
     </style>
 </head>
 <body>
-
-    <h1>میرے تمام پروڈکٹس</h1>
-    <div id="product-container">لوڈنگ جاری ہے...</div>
-
-    <!-- Toast -->
+    <h1>📦 میرے تمام پروڈکٹس (نئے سب سے اوپر)</h1>
+    <div id="product-container">⏳ لوڈنگ جاری ہے...</div>
     <div id="toast"></div>
 
-    <!-- Image Lightbox -->
+    <!-- Lightbox -->
     <div id="lightbox" role="dialog" aria-modal="true">
         <img id="lightbox-img" src="" alt="">
         <div id="lightbox-name"></div>
         <div id="lightbox-actions">
-            <button class="lb-btn lb-btn-copy" onclick="lbCopyLink()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
-                لنک کاپی کریں
-            </button>
-            <button class="lb-btn lb-btn-download" onclick="lbDownload()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                ڈاؤنلوڈ
-            </button>
-            <button class="lb-btn lb-btn-close" onclick="closeLightbox()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                بند کریں
-            </button>
+            <button class="lb-btn lb-btn-copy" onclick="lbCopyLink()"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg> لنک کاپی</button>
+            <button class="lb-btn lb-btn-download" onclick="lbDownload()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> ڈاؤنلوڈ</button>
+            <button class="lb-btn lb-btn-close" onclick="closeLightbox()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> بند کریں</button>
         </div>
     </div>
 
-    <!-- Video Modal -->
+    <!-- Video Modal (opens in new tab, but kept for structure) -->
     <div id="video-modal" role="dialog" aria-modal="true">
         <video id="modal-video" controls playsinline></video>
         <div id="video-modal-name"></div>
         <div id="video-modal-actions">
-            <button class="lb-btn lb-btn-copy" onclick="vmCopyLink()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
-                لنک کاپی کریں
-            </button>
-            <button class="lb-btn lb-btn-download" onclick="vmDownload()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                ڈاؤنلوڈ
-            </button>
-            <button class="lb-btn lb-btn-close" onclick="closeVideoModal()">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-                بند کریں
-            </button>
+            <button class="lb-btn lb-btn-copy" onclick="vmCopyLink()"><svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg> لنک کاپی</button>
+            <button class="lb-btn lb-btn-download" onclick="vmDownload()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg> ڈاؤنلوڈ</button>
+            <button class="lb-btn lb-btn-close" onclick="closeVideoModal()"><svg class="icon" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> بند کریں</button>
         </div>
     </div>
 
@@ -467,7 +402,7 @@
         const repo = "12";
         const mainFolder = "1122";
 
-        // ========== TOAST ==========
+        // ---- TOAST ----
         let toastTimer;
         function showToast(msg) {
             const t = document.getElementById('toast');
@@ -477,7 +412,7 @@
             toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
         }
 
-        // ========== CLIPBOARD ==========
+        // ---- CLIPBOARD ----
         async function copyText(text, successMsg) {
             try {
                 await navigator.clipboard.writeText(text);
@@ -494,27 +429,21 @@
             }
         }
 
-        // ========== IMAGE LIGHTBOX ==========
-        let currentImgUrl = '';
-        let currentImgName = '';
-
+        // ---- IMAGE LIGHTBOX ----
+        let currentImgUrl = '', currentImgName = '';
         function openLightbox(url, name) {
             currentImgUrl = url;
             currentImgName = name;
             document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox-img').alt = name;
             document.getElementById('lightbox-name').textContent = name;
             document.getElementById('lightbox').classList.add('open');
             document.body.style.overflow = 'hidden';
         }
-
         function closeLightbox() {
             document.getElementById('lightbox').classList.remove('open');
             document.body.style.overflow = '';
         }
-
         function lbCopyLink() { copyText(currentImgUrl, '✅ تصویر کا لنک کاپی ہو گیا!'); }
-
         function lbDownload() {
             const a = document.createElement('a');
             a.href = currentImgUrl;
@@ -522,57 +451,24 @@
             a.target = '_blank'; a.rel = 'noopener';
             document.body.appendChild(a); a.click(); document.body.removeChild(a);
         }
+        document.getElementById('lightbox').addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
 
-        document.getElementById('lightbox').addEventListener('click', function(e) {
-            if (e.target === this) closeLightbox();
-        });
-
-        // ========== MOBILE-FRIENDLY DOWNLOAD ==========
-        async function mobileDownload(url, name) {
-            showToast('⏳ ڈاؤنلوڈ شروع ہو رہا ہے...');
-            try {
-                const resp = await fetch(url);
-                const blob = await resp.blob();
-                const blobUrl = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = blobUrl;
-                a.download = name || 'video';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 8000);
-                showToast('✅ ڈاؤنلوڈ مکمل!');
-            } catch {
-                window.open(url, '_blank', 'noopener');
-                showToast('✅ نئے ٹیب میں کھلا — وہاں سے سیو کریں');
-            }
-        }
-
-        // ========== VIDEO MODAL ==========
-        let currentVideoUrl = '';
-        let currentVideoName = '';
-
+        // ---- VIDEO MODAL (opens new tab for direct play) ----
+        let currentVideoUrl = '', currentVideoName = '';
         function openVideoModal(url, name) {
             currentVideoUrl = url;
             currentVideoName = name;
-
-            // GitHub raw URLs: open directly in browser tab — fast, no buffering wait
             window.open(url, '_blank', 'noopener');
         }
-
         function closeVideoModal() {
             const vid = document.getElementById('modal-video');
-            vid.pause();
-            vid.src = '';
+            if (vid) vid.pause();
             document.getElementById('video-modal').classList.remove('open');
             document.body.style.overflow = '';
         }
-
-        function vmCopyLink() { copyText(currentVideoUrl, '✅ ویڈیو کا لنک کاپی ہو گیا!'); }
-
-        // Mobile-friendly download: fetch blob then save
+        function vmCopyLink() { copyText(currentVideoUrl, '✅ ویڈیو لنک کاپی ہو گیا!'); }
         async function vmDownload() {
-            showToast('⏳ ڈاؤنلوڈ شروع ہو رہا ہے...');
+            showToast('⏳ ڈاؤنلوڈ شروع...');
             try {
                 const resp = await fetch(currentVideoUrl);
                 const blob = await resp.blob();
@@ -586,69 +482,107 @@
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
                 showToast('✅ ڈاؤنلوڈ مکمل!');
             } catch {
-                // Fallback: open in new tab
                 window.open(currentVideoUrl, '_blank', 'noopener');
-                showToast('✅ نئے ٹیب میں کھلا — وہاں سے سیو کریں');
+                showToast('نئے ٹیب میں کھل گیا، وہاں سے سیو کریں');
             }
         }
+        document.getElementById('video-modal').addEventListener('click', function(e) { if (e.target === this) closeVideoModal(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeLightbox(); closeVideoModal(); } });
 
-        document.getElementById('video-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeVideoModal();
-        });
+        // ----- HELPER: fetch file commit dates for a given folder (newest first sorting) -----
+        // Returns Map<filename (base), ISO date string>
+        const commitDateCache = new Map(); // cache per folder path
+        async function fetchCommitDatesForFolder(folderPath, fileNames) {
+            if (!folderPath) folderPath = "";
+            const cacheKey = `${folderPath}`;
+            if (commitDateCache.has(cacheKey)) return commitDateCache.get(cacheKey);
+            
+            const dateMap = new Map();
+            try {
+                // Get latest 100 commits that affected this folder path
+                const apiUrl = `https://api.github.com/repos/${username}/${repo}/commits?path=${encodeURIComponent(folderPath)}&per_page=100`;
+                const resp = await fetch(apiUrl);
+                if (!resp.ok) throw new Error("Commits fetch failed");
+                const commits = await resp.json();
+                // iterate commits from latest to older
+                for (const commit of commits) {
+                    const filesModified = commit.files || [];
+                    const commitDate = commit.commit.committer.date;
+                    for (const fileInfo of filesModified) {
+                        const fullPath = fileInfo.filename;
+                        // only consider files that are directly inside this folder or subfolders?
+                        // we need exact base filename that matches our items
+                        const baseName = fullPath.split('/').pop();
+                        if (fileNames.includes(baseName)) {
+                            if (!dateMap.has(baseName) || new Date(commitDate) > new Date(dateMap.get(baseName))) {
+                                dateMap.set(baseName, commitDate);
+                            }
+                        }
+                    }
+                }
+                // For files that never appeared in commits (rare), assign fallback date (oldest possible)
+                for (const fname of fileNames) {
+                    if (!dateMap.has(fname)) {
+                        dateMap.set(fname, "1970-01-01T00:00:00Z");
+                    }
+                }
+            } catch (err) {
+                console.warn("Failed to fetch commit dates for sorting, using fallback alphabetical", err);
+                // Fallback: assign same date to all so sorting falls to name desc (newer naming maybe)
+                for (const fname of fileNames) {
+                    dateMap.set(fname, "2000-01-01T00:00:00Z");
+                }
+            }
+            commitDateCache.set(cacheKey, dateMap);
+            return dateMap;
+        }
 
-        // ========== ESC KEY ==========
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeLightbox(); closeVideoModal(); }
-        });
-
-        // ========== IMAGE CARD ==========
-        function createImageCard(item) {
+        // ---- CREATE CARDS ----
+        function createImageCard(item, dateForDisplay = null) {
             const url = item.download_url;
             const displayName = item.name.split('.').slice(0, -1).join('.');
-
+            const safeUrl = url.replace(/'/g, "\\'");
+            const safeName = displayName.replace(/'/g, "\\'");
             const card = document.createElement('div');
             card.className = 'product-card';
-
+            card.setAttribute('data-date', dateForDisplay || '');
             card.innerHTML = `
-                <div class="img-wrapper" onclick="openLightbox('${url.replace(/'/g,"\\'")}', '${displayName.replace(/'/g,"\\'")}')">
+                <div class="img-wrapper" onclick="openLightbox('${safeUrl}', '${safeName}')">
                     <img src="${url}" alt="${item.name}" loading="lazy">
                     <span class="zoom-hint">🔍 بڑا دیکھیں</span>
                 </div>
                 <div class="product-name">${displayName}</div>
                 <div class="card-actions">
-                    <button class="btn btn-copy-link" onclick="copyText('${url.replace(/'/g,"\\'")}', '✅ تصویر کا لنک کاپی ہو گیا!')">
+                    <button class="btn btn-copy-link" onclick="copyText('${safeUrl}', '✅ تصویر کا لنک کاپی ہو گیا!')">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
-                        لنک کاپی کریں
+                        لنک کاپی
                     </button>
-                    <button class="btn btn-open" onclick="window.open('${url.replace(/'/g,"\\'")}','_blank')">
+                    <button class="btn btn-open" onclick="window.open('${safeUrl}','_blank')">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
                         کھولیں
                     </button>
-                    <button class="btn btn-copy-html" onclick="copyText('<img src=\\'${url.replace(/'/g,"\\'")}\\'>','✅ HTML ٹیگ کاپی ہو گیا!')">
+                    <button class="btn btn-copy-html" onclick="copyText('<img src=\\'${safeUrl}\\'>','✅ HTML ٹیگ کاپی ہو گیا!')">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
-                        HTML کاپی
+                        HTML
                     </button>
-                    <button class="btn btn-copy-md" onclick="copyText('${url.replace(/'/g,"\\'")}','✅ MD لنک کاپی ہو گیا!')">
+                    <button class="btn btn-copy-md" onclick="copyText('${safeUrl}','✅ MD لنک کاپی ہو گیا!')">
                         <svg class="icon" viewBox="0 0 24 24"><path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM11 7h2v2h2v2h-2v2h-2v-2H9V9h2V7z"/></svg>
                         MD لنک
                     </button>
                 </div>
             `;
-
             return card;
         }
 
-        // ========== VIDEO CARD ==========
-        function createVideoCard(item) {
+        function createVideoCard(item, dateForDisplay = null) {
             const url = item.download_url;
             const displayName = item.name.split('.').slice(0, -1).join('.');
-
-            const card = document.createElement('div');
-            card.className = 'product-card';
-
             const safeUrl = url.replace(/'/g, "\\'");
             const safeName = displayName.replace(/'/g, "\\'");
-
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.setAttribute('data-date', dateForDisplay || '');
+            const uniqueId = `vid-${Date.now()}-${Math.random()}`;
             card.innerHTML = `
                 <div class="video-wrapper" onclick="openVideoModal('${safeUrl}', '${safeName}')">
                     <video muted preload="metadata" playsinline>
@@ -660,7 +594,7 @@
                         </div>
                     </div>
                     <span class="video-badge">▶ ویڈیو</span>
-                    <span class="duration-badge" id="dur-${item.sha}"></span>
+                    <span class="duration-badge" id="dur-${uniqueId}"></span>
                 </div>
                 <div class="product-name">${displayName}</div>
                 <div class="card-actions">
@@ -678,64 +612,119 @@
                     </button>
                 </div>
             `;
-
-            // Show duration after metadata loads
             const videoEl = card.querySelector('video');
             videoEl.addEventListener('loadedmetadata', () => {
                 const dur = videoEl.duration;
                 if (!isNaN(dur)) {
                     const mins = Math.floor(dur / 60);
                     const secs = Math.floor(dur % 60).toString().padStart(2, '0');
-                    const badge = card.querySelector(`#dur-${item.sha}`);
+                    const badge = card.querySelector(`#dur-${uniqueId}`);
                     if (badge) { badge.textContent = `${mins}:${secs}`; badge.style.display = 'block'; }
                 }
             });
-
             return card;
         }
 
-        // ========== GITHUB API ==========
-        async function fetchContent(path) {
-            const url = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
-            const response = await fetch(url);
-            return await response.json();
-        }
-
-        async function loadAllProducts(path) {
-            const container = document.getElementById('product-container');
-            if (path === mainFolder) container.innerHTML = "";
-
+        async function mobileDownload(url, name) {
+            showToast('⏳ ڈاؤنلوڈ شروع...');
             try {
-                const items = await fetchContent(path);
-
-                for (let item of items) {
-                    if (item.type === "dir") {
-                        const folderTitle = document.createElement('div');
-                        folderTitle.className = 'folder-name';
-                        folderTitle.innerHTML = `
-                            <svg style="width:16px;height:16px;fill:#aaa;flex-shrink:0" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
-                            فولڈر: ${item.name}
-                        `;
-                        container.appendChild(folderTitle);
-                        await loadAllProducts(item.path);
-
-                    } else if (item.type === "file" && item.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-                        container.appendChild(createImageCard(item));
-
-                    } else if (item.type === "file" && item.name.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i)) {
-                        container.appendChild(createVideoCard(item));
-                    }
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                const errDiv = document.createElement('div');
-                errDiv.style.cssText = 'grid-column:1/-1;color:red;text-align:center;padding:20px';
-                errDiv.textContent = 'لوڈ کرنے میں خرابی آئی۔';
-                container.appendChild(errDiv);
+                const resp = await fetch(url);
+                const blob = await resp.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = name || 'media';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 6000);
+                showToast('✅ ڈاؤنلوڈ مکمل!');
+            } catch {
+                window.open(url, '_blank', 'noopener');
+                showToast('نئے ٹیب میں کھلا، وہاں سے سیو کریں');
             }
         }
 
-        loadAllProducts(mainFolder);
+        // ----- CORE: Process folder recursively with SORTING (newest first) -----
+        async function processFolder(folderPath, containerElement) {
+            const contentsUrl = `https://api.github.com/repos/${username}/${repo}/contents/${folderPath}`;
+            let items;
+            try {
+                const res = await fetch(contentsUrl);
+                if (!res.ok) throw new Error('Folder not accessible');
+                items = await res.json();
+            } catch (err) {
+                console.error(err);
+                const errDiv = document.createElement('div');
+                errDiv.style.cssText = 'grid-column:1/-1;color:red;text-align:center;padding:20px';
+                errDiv.textContent = `فولڈر لوڈ نہیں ہو سکا: ${folderPath}`;
+                containerElement.appendChild(errDiv);
+                return;
+            }
+
+            // Separate directories and media files
+            const subDirs = [];
+            const imageFiles = [];
+            const videoFiles = [];
+            for (const it of items) {
+                if (it.type === 'dir') {
+                    subDirs.push(it);
+                } else if (it.type === 'file') {
+                    if (it.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) imageFiles.push(it);
+                    else if (it.name.match(/\.(mp4|webm|ogg|mov|avi|mkv)$/i)) videoFiles.push(it);
+                }
+            }
+            
+            // Combine all media files for sorting
+            const allMedia = [...imageFiles, ...videoFiles];
+            if (allMedia.length > 0) {
+                const fileNames = allMedia.map(f => f.name);
+                const dateMap = await fetchCommitDatesForFolder(folderPath, fileNames);
+                // Sort by commit date descending (newest first)
+                allMedia.sort((a, b) => {
+                    const dateA = dateMap.get(a.name) || "1970-01-01";
+                    const dateB = dateMap.get(b.name) || "1970-01-01";
+                    return new Date(dateB) - new Date(dateA);
+                });
+                // Append sorted media cards
+                for (const media of allMedia) {
+                    const commitDate = dateMap.get(media.name) || "";
+                    if (media.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+                        containerElement.appendChild(createImageCard(media, commitDate));
+                    } else {
+                        containerElement.appendChild(createVideoCard(media, commitDate));
+                    }
+                }
+            }
+
+            // Process subfolders recursively (keep subfolder order by name, but you can also sort by date? user didn't specify, we keep alphabetical)
+            // Sort subfolders alphabetically for neatness
+            subDirs.sort((a, b) => a.name.localeCompare(b.name));
+            for (const dir of subDirs) {
+                const folderDiv = document.createElement('div');
+                folderDiv.className = 'folder-name';
+                folderDiv.innerHTML = `<svg style="width:16px;height:16px;fill:#aaa;flex-shrink:0" viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> 📂 ${dir.name}`;
+                containerElement.appendChild(folderDiv);
+                await processFolder(dir.path, containerElement);
+            }
+        }
+
+        // ---- INITIAL LOAD ----
+        async function loadCatalog() {
+            const container = document.getElementById('product-container');
+            container.innerHTML = '';
+            try {
+                await processFolder(mainFolder, container);
+                if (container.children.length === 0) {
+                    container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:40px;">🤷 کوئی پروڈکٹ نہیں ملی (نہ تصویر نہ ویڈیو)</div>';
+                }
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div style="grid-column:1/-1;color:red;text-align:center;padding:20px">خرابی آگئی، انٹرنیٹ چیک کریں یا ریپوزٹری درست ہے؟</div>';
+            }
+        }
+
+        loadCatalog();
     </script>
 </body>
 </html>
